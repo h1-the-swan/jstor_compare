@@ -1,0 +1,9 @@
+*.pyc
+undirdir/
+outdirdir/
+pagerank/
+pagerank_unrecorded/
+*.out
+*.log
+pID_year.txt
+.ipynb_checkpoints/
