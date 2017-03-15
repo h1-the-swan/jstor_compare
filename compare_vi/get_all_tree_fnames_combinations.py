@@ -9,12 +9,12 @@ logging.basicConfig(format='%(asctime)s %(name)s.%(lineno)d %(levelname)s : %(me
         level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_fnames(method):
+def get_fnames(method, basedir):
     # https://stackoverflow.com/questions/2186525/use-a-glob-to-find-files-recursively-in-python
     matches = []
-    for root, dirname, filenames in os.walk(method):
+    for root, dirname, filenames in os.walk(os.path.join(basedir, method)):
         for filename in fnmatch.filter(filenames, "*.tree"):
-            matches.append(os.path.join(root, filename))
+            matches.append(os.path.abspath(os.path.join(root, filename)))
     return matches
 
 def output_combinations(fnames, outfname, sep=','):
@@ -35,7 +35,7 @@ def main(args):
             ]
     fnames = []
     for method in methods:
-        fnames.extend(get_fnames(method))
+        fnames.extend(get_fnames(method, args.basedir))
     output_combinations(fnames, args.outfname)
 
 if __name__ == "__main__":
@@ -45,6 +45,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="get all tree filenames")
     parser.add_argument("-o", "--outfname", default='all_tree_fnames_combinations.csv', help="output csv filename")
+    parser.add_argument("--basedir", default='..', help="base directory to search for tree files")
     parser.add_argument("--debug", action='store_true', help="output debugging info")
     global args
     args = parser.parse_args()
