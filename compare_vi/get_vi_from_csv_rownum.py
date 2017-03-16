@@ -13,6 +13,7 @@ def get_vi_from_line(line, sep=','):
     line = line.strip().split(sep)
     fname_left = line[2]
     fname_right = line[3]
+    logger.debug("files to compare: {} | {}".format(fname_left, fname_right))
     vi = get_vi_from_fnames(fname_left, fname_right)
     return {
             'fname_left': fname_left,
@@ -24,15 +25,20 @@ def get_vi_from_csv_rownum(csvfilename, rownum):
     rownum = str(rownum)
     vi_dict = {}
     with open(csvfilename, 'r') as f:
+        i = 0
         for line in f:
             if line[:len(rownum)] == rownum:
+                logger.debug('found line in csv file. line number {} in file'.format(i))
                 vi_dict = get_vi_from_line(line)
+                break
+            i += 1
     return vi_dict
     
 
 def main():
     vi_dict = get_vi_from_csv_rownum(args.csvfilename, args.rownum)
     if vi_dict:
+        logger.debug('VI is {}. writing to {}'.format(vi_dict['vi'], args.output.name))
         output = args.sep.join( [vi_dict['fname_left'], vi_dict['fname_right'], str(vi_dict['vi'])] )
         args.output.write(output)
         args.output.write('\n')

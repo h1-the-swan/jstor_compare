@@ -43,6 +43,7 @@ def get_vi_from_fnames(fname_left, fname_right):
         rows = parse_tree(fname)
         df = pd.DataFrame(rows, columns=['pid', 'cl'])
         dfs.append(df)
+    logger.info("Tree files parsed. Computing VI...")
     return get_vi_from_df(dfs[0], dfs[1])
             
 
